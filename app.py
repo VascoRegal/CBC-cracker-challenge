@@ -7,22 +7,20 @@ from crypto import AESCipher
 
 app = Flask(__name__)
 
-key = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-cipher = AESCipher(key)
+cipher = AESCipher()
 cookie = cipher.encrypt(os.getenv("FLAG"))
 
-@app.route("/hello")
-def hello_world():
+@app.route("/cookie")
+def fav_cookie():
+	return f"[Cookie Monster] -> My favourite cookies look like : {cookie.decode('utf-8')}", 200 
+
+@app.route("/feed")
+def feed():
 	request_cookie = request.headers.get("Cookie")
+	try:
+		cipher.decrypt(request_cookie)
+	except:
+		return "[Cookie Monster] -> Ugh! This cookie is horrible!", 500
 
-	if not request_cookie:
-		return f"You dropped your cookie. Here it is: {cookie.hex()}", 200 
-
-	#try:
-	cipher.decrypt(bytes.fromhex(request_cookie))
-	#except:
-	#	return "Invalid cookie format", 500
-	
-	return "Hello, World", 200
-
+	return "[Cookie Monster] -> Hehehehe. Thank you!", 200
 

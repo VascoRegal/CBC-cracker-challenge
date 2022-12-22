@@ -6,9 +6,11 @@ from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import pad, unpad
 
+import os
+
 class AESCipher:
-    def __init__(self, key):
-        self.key = md5(key.encode('utf8')).digest()
+    def __init__(self):
+        self.key = os.urandom(int(os.getenv("KEY_LEN")) // 8)
 
     def encrypt(self, data):
         iv = get_random_bytes(AES.block_size)
